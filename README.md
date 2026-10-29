@@ -1,4 +1,23 @@
 <!--
+SPDX-FileCopyrightText: 2026 MSHost contributors
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+# MSHost Cloud Desktop
+
+Форк Nextcloud с брендингом MSHost и сохранённым привычным интерфейсом.
+Сервер по умолчанию: **https://cloud.mshostcloud.org**.
+
+- [Брендинг и текущее состояние](MSHOST-BRANDING.md)
+- [Сборка, проверки и история работ](docs/mshost/README.md)
+- [Переход на Cloudflare и серверные ограничения](docs/mshost/server-migration.md)
+
+Это исходники тестовой alpha-сборки. Ссылки и badges в исходном README ниже относятся
+к оригинальному Nextcloud, а не к проверкам или магазинам MSHost Cloud.
+Собственные бинарники не прикладывались к этому обновлению исходников.
+
+## Исходная документация Nextcloud
+
+<!--
   - SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
   - SPDX-FileCopyrightText: 2011 Nextcloud GmbH and Nextcloud contributors
   - SPDX-License-Identifier: GPL-2.0-or-later
