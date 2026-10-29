@@ -291,6 +291,13 @@ QIcon Theme::applicationIcon() const
  */
 QIcon Theme::themeIcon(const QString &name, bool sysTray) const
 {
+    using namespace Qt::StringLiterals;
+    if (sysTray && isBranded() && name.startsWith(u"state-"_s)) {
+        auto brandedName = name;
+        brandedName.replace(u"state-"_s, u"state-tray-"_s);
+        return themeIcon(brandedName, false);
+    }
+
     QString flavor;
     if (sysTray) {
         flavor = systrayIconFlavor(_mono);
@@ -495,18 +502,13 @@ QString Theme::helpUrl() const
 #ifdef APPLICATION_HELP_URL
     return QString::fromLatin1(APPLICATION_HELP_URL);
 #else
-    return QString::fromLatin1("https://docs.nextcloud.com/server/latest/user_manual/en/desktop/index.html");
+    return QString::fromUtf8("https://github.com/BigShiShKa/mshost-desktop");
 #endif
 }
 
 QString Theme::conflictHelpUrl() const
 {
-    const auto baseUrl = helpUrl();
-    if (baseUrl.isEmpty()) {
-        return QString();
-    }
-
-    return Utility::trailingSlashPath(baseUrl) + QStringLiteral("conflicts.html");
+    return helpUrl();
 }
 
 QString Theme::overrideServerUrl() const
@@ -654,15 +656,14 @@ QUrl Theme::signupUrlForBranding(const QString &configuredUrl)
         && (url.scheme() == u"http"_s || url.scheme() == u"https"_s)) {
         return url;
     }
-    return QUrl(u"https://nextcloud.com/sign-up/?flow=V3"_s);
+    return QUrl(QString::fromUtf8(APPLICATION_SERVER_URL));
 }
 
 QString Theme::gitSHA1() const
 {
     QString devString;
 #ifdef GIT_SHA1
-    const QString githubPrefix(QLatin1String(
-        "https://github.com/nextcloud/desktop/commit/"));
+    const QString githubPrefix(QLatin1String("https://github.com/BigShiShKa/mshost-desktop/commit/"));
     const QString gitSha1(QLatin1String(GIT_SHA1));
     //: %1 is the full Git commit URL. %2 is the abbreviated Git revision. %3 is the build date.
     //: %4 is the build time. %5 is the Qt version. %6 is the TLS library version.

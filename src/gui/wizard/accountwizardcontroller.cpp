@@ -1017,7 +1017,7 @@ void AccountWizardController::openSignup()
 
 void AccountWizardController::openSelfHostedServerGuide()
 {
-    Utility::openBrowser(QUrl(QStringLiteral("https://docs.nextcloud.com/server/latest/admin_manual/installation/#installation")));
+    Utility::openBrowser(QUrl(Theme::instance()->helpUrl()));
 }
 
 void AccountWizardController::openProxySettings()

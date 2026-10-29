@@ -108,6 +108,7 @@ nextcloud_add_test(SharingDialog)
 target_link_libraries(SharingDialogTest PRIVATE nextcloudGuiSharing nextcloudGuiSharingplugin)
 nextcloud_add_test(PushNotifications)
 nextcloud_add_test(Theme)
+nextcloud_add_test(NavigationPaneHelper)
 nextcloud_add_test(SettingsDialog)
 nextcloud_add_test(IconUtils)
 nextcloud_add_test(CustomStateIcons)
@@ -304,3 +305,11 @@ if (CMOCKA_FOUND)
     include(AddCMockaTest)
     add_subdirectory(csync)
 endif ()
+
+add_test(NAME MSHostBrandingConfig
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/mshost-branding.cmake)
+add_test(NAME MSHostBrandingDevConfig
+    COMMAND ${CMAKE_COMMAND} -DNEXTCLOUD_DEV=ON -P ${CMAKE_CURRENT_SOURCE_DIR}/mshost-branding.cmake)
+add_test(NAME MSHostBrandingCustomServer
+    COMMAND ${CMAKE_COMMAND} -DAPPLICATION_SERVER_URL=https://example.invalid
+        -DEXPECTED_SERVER_URL=https://example.invalid -P ${CMAKE_CURRENT_SOURCE_DIR}/mshost-branding.cmake)

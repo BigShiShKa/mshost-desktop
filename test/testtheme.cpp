@@ -11,6 +11,8 @@
 #include "theme.h"
 #include "themeutils.h"
 
+#include <QImage>
+#include <QPixmap>
 #include <QStandardPaths>
 #include <QUrl>
 
@@ -65,7 +67,7 @@ private Q_SLOTS:
         QTest::addColumn<QString>("configured");
         QTest::addColumn<QUrl>("expected");
 
-        const auto defaultUrl = QUrl(u"https://nextcloud.com/sign-up/?flow=V3"_s);
+        const auto defaultUrl = QUrl(QString::fromUtf8(APPLICATION_SERVER_URL));
         const auto custom = u"https://signup.example.com/register?plan=business&source=desktop"_s;
         const auto http = u"http://signup.example.com:8080/register"_s;
         const auto encoded = u"https://signup.example.com/register?next=%2Ffiles&offer=$monthly#plans"_s;
@@ -94,6 +96,87 @@ private Q_SLOTS:
         QFETCH(QUrl, expected);
 
         QCOMPARE(OCC::Theme::signupUrlForBranding(configured), expected);
+    }
+
+    void testMSHostLinks_data()
+    {
+        QTest::addColumn<QString>("actual");
+        QTest::addColumn<QString>("expected");
+        const auto theme = OCC::Theme::instance();
+        const auto server = QString::fromUtf8(APPLICATION_SERVER_URL);
+        const auto help = QString::fromUtf8(APPLICATION_HELP_URL);
+        QTest::newRow("server-hint") << theme->wizardUrlHint() << server;
+        QTest::newRow("signup-fallback") << OCC::Theme::signupUrlForBranding({}).toString() << server;
+        QTest::newRow("help") << theme->helpUrl() << help;
+        QTest::newRow("conflict-help") << theme->conflictHelpUrl() << help;
+    }
+
+    void testMSHostLinks()
+    {
+        QFETCH(QString, actual);
+        QFETCH(QString, expected);
+        QCOMPARE(actual, expected);
+    }
+
+    void testMSHostSourceLink()
+    {
+        const auto details = OCC::Theme::instance()->gitSHA1();
+        QVERIFY(!details.contains(u"github.com/nextcloud/"_s));
+        QVERIFY(details.contains(u"github.com/BigShiShKa/mshost-desktop/commit/"_s));
+    }
+
+    void testMSHostCloudOnlySetup()
+    {
+        const auto theme = OCC::Theme::instance();
+        QVERIFY(theme->wizardHideSignupButton());
+        QVERIFY(theme->wizardHideSelfHostButton());
+    }
+
+    void testMSHostTrayLogo_data()
+    {
+        QTest::addColumn<int>("status");
+        QTest::addColumn<bool>("mono");
+        for (const auto mono : {false, true}) {
+            for (const auto status : {-1,
+                                      int(OCC::SyncResult::Success),
+                                      int(OCC::SyncResult::SyncRunning),
+                                      int(OCC::SyncResult::Paused),
+                                      int(OCC::SyncResult::Problem),
+                                      int(OCC::SyncResult::Error),
+                                      int(OCC::SyncResult::Undefined),
+                                      int(OCC::SyncResult::SetupError)}) {
+                const auto name = QString::number(status) + (mono ? u"-mono"_s : u"-color"_s);
+                QTest::newRow(qPrintable(name)) << status << mono;
+            }
+        }
+    }
+
+    void testMSHostTrayLogo()
+    {
+        QFETCH(int, status);
+        QFETCH(bool, mono);
+        const auto theme = OCC::Theme::instance();
+        theme->setSystrayUseMonoIcons(mono);
+        const auto icon = status == -1 ? theme->folderOfflineIcon(true) : theme->syncStateIcon(static_cast<OCC::SyncResult::Status>(status), true);
+        constexpr auto iconSize = 64;
+        const auto image = icon.pixmap(iconSize, iconSize).toImage();
+        QVERIFY(!image.isNull());
+        QCOMPARE(image.pixelColor(0, 0).alpha(), 0);
+        auto cyanPixels = 0;
+        auto purplePixels = 0;
+        for (auto y = 0; y < image.height(); ++y) {
+            for (auto x = 0; x < image.width(); ++x) {
+                const auto color = image.pixelColor(x, y);
+                if (color.alpha() < 128) {
+                    continue;
+                }
+                cyanPixels += color.red() < 90 && color.green() > 130 && color.blue() > 130;
+                purplePixels += color.red() > 90 && color.green() < 100 && color.blue() > 130;
+            }
+        }
+        constexpr auto minimumBrandPixels = 10;
+        QVERIFY2(cyanPixels >= minimumBrandPixels && purplePixels >= minimumBrandPixels, "Every tray state must retain the cyan and purple MSHost cloud logo.");
+        theme->setSystrayUseMonoIcons(false);
     }
 
     void testHidpiFileName_darkBackground_returnPathToWhiteIcon()
@@ -174,5 +257,5 @@ private Q_SLOTS:
     }
 };
 
-QTEST_GUILESS_MAIN(TestTheme)
+QTEST_MAIN(TestTheme)
 #include "testtheme.moc"

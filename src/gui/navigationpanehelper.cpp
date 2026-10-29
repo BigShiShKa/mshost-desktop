@@ -55,26 +55,29 @@ void NavigationPaneHelper::scheduleUpdateCloudStorageRegistry()
     }
 }
 
+bool NavigationPaneHelper::ownsNamespaceEntry(const QString &applicationName)
+{
+    return applicationName == QString::fromUtf8(APPLICATION_NAME);
+}
+
 void NavigationPaneHelper::updateCloudStorageRegistry()
 {
     // Start by looking at every registered namespace extension for the sidebar, and look for an "ApplicationName" value
     // that matches ours when we saved.
     QVector<QUuid> entriesToRemove;
-    const auto currentAppName = QLatin1String(APPLICATION_NAME);
 #ifdef Q_OS_WIN
     const auto nameSpaceKey = QStringLiteral(R"(Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace)");
     if (Utility::registryKeyExists(HKEY_CURRENT_USER, nameSpaceKey)) {
-        Utility::registryWalkSubKeys(HKEY_CURRENT_USER, nameSpaceKey,
-            [&entriesToRemove, &currentAppName](HKEY key, const QString &subKey) {
-                const auto appName = Utility::registryGetKeyValue(key, subKey, QStringLiteral("ApplicationName"));
-                qCDebug(lcNavPane) << "Searching for user with subKey:" << subKey << "for appName:" << appName.toString();
-                if (appName.toString() == currentAppName || appName.toString() == unbrandedApplicationName) {
-                    QUuid clsid{ subKey };
-                    Q_ASSERT(!clsid.isNull());
-                    entriesToRemove.append(clsid);
-                    qCDebug(lcNavPane) << "Going to remove:" << subKey;
-                }
-            });
+        Utility::registryWalkSubKeys(HKEY_CURRENT_USER, nameSpaceKey, [&entriesToRemove](HKEY key, const QString &subKey) {
+            const auto appName = Utility::registryGetKeyValue(key, subKey, QStringLiteral("ApplicationName"));
+            qCDebug(lcNavPane) << "Searching for user with subKey:" << subKey << "for appName:" << appName.toString();
+            if (ownsNamespaceEntry(appName.toString())) {
+                QUuid clsid{subKey};
+                Q_ASSERT(!clsid.isNull());
+                entriesToRemove.append(clsid);
+                qCDebug(lcNavPane) << "Going to remove:" << subKey;
+            }
+        });
     }
 #endif
 

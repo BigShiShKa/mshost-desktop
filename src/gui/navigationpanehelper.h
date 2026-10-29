@@ -8,9 +8,11 @@
 #define NAVIGATIONPANEHELPER_H
 
 #include <QObject>
+#include <QString>
 #include <QTimer>
 
-namespace OCC {
+namespace OCC
+{
 
 class FolderMan;
 
@@ -20,10 +22,14 @@ class NavigationPaneHelper : public QObject
 public:
     NavigationPaneHelper(FolderMan *folderMan);
 
-    [[nodiscard]] bool showInExplorerNavigationPane() const { return _showInExplorerNavigationPane; }
+    [[nodiscard]] bool showInExplorerNavigationPane() const
+    {
+        return _showInExplorerNavigationPane;
+    }
     void setShowInExplorerNavigationPane(bool show);
 
     void scheduleUpdateCloudStorageRegistry();
+    [[nodiscard]] static bool ownsNamespaceEntry(const QString &applicationName);
 
 private:
     void updateCloudStorageRegistry();
@@ -31,7 +37,6 @@ private:
     FolderMan *_folderMan;
     bool _showInExplorerNavigationPane;
     QTimer _updateCloudStorageRegistryTimer;
-    static constexpr char unbrandedApplicationName[] = "Nextcloud";
 };
 
 } // namespace OCC

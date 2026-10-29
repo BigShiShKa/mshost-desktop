@@ -47,7 +47,8 @@ ScrollView {
             anchors.centerIn: parent
             width: Math.min(parent.width, Style.assistantEmptyStateMaximumWidth)
             visible: messageList.count === 0 && !root.assistantController.thinking
-            text: qsTr("Start a conversation with Nextcloud Assistant.")
+            //: %1 is the application name, for example MSHost-Cloud.
+            text: qsTr("Start a conversation with %1 Assistant.").arg(NC.Theme.appNameGUI)
             color: Style.wizardSecondaryText
             font.pixelSize: Style.wizardBodyFontPixelSize
             horizontalAlignment: Text.AlignHCenter

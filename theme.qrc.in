@@ -309,5 +309,42 @@
 		<file>theme/backup.svg</file>
 		<file>theme/convert_to_text.svg</file>
 		<file>theme/security.svg</file>
+
+        <file>theme/colored/state-tray-ok.svg</file>
+        <file>theme/colored/state-tray-ok-16.png</file>
+        <file>theme/colored/state-tray-ok-32.png</file>
+        <file>theme/colored/state-tray-ok-64.png</file>
+        <file>theme/colored/state-tray-ok-128.png</file>
+        <file>theme/colored/state-tray-ok-256.png</file>
+        <file>theme/colored/state-tray-sync.svg</file>
+        <file>theme/colored/state-tray-sync-16.png</file>
+        <file>theme/colored/state-tray-sync-32.png</file>
+        <file>theme/colored/state-tray-sync-64.png</file>
+        <file>theme/colored/state-tray-sync-128.png</file>
+        <file>theme/colored/state-tray-sync-256.png</file>
+        <file>theme/colored/state-tray-pause.svg</file>
+        <file>theme/colored/state-tray-pause-16.png</file>
+        <file>theme/colored/state-tray-pause-32.png</file>
+        <file>theme/colored/state-tray-pause-64.png</file>
+        <file>theme/colored/state-tray-pause-128.png</file>
+        <file>theme/colored/state-tray-pause-256.png</file>
+        <file>theme/colored/state-tray-warning.svg</file>
+        <file>theme/colored/state-tray-warning-16.png</file>
+        <file>theme/colored/state-tray-warning-32.png</file>
+        <file>theme/colored/state-tray-warning-64.png</file>
+        <file>theme/colored/state-tray-warning-128.png</file>
+        <file>theme/colored/state-tray-warning-256.png</file>
+        <file>theme/colored/state-tray-error.svg</file>
+        <file>theme/colored/state-tray-error-16.png</file>
+        <file>theme/colored/state-tray-error-32.png</file>
+        <file>theme/colored/state-tray-error-64.png</file>
+        <file>theme/colored/state-tray-error-128.png</file>
+        <file>theme/colored/state-tray-error-256.png</file>
+        <file>theme/colored/state-tray-offline.svg</file>
+        <file>theme/colored/state-tray-offline-16.png</file>
+        <file>theme/colored/state-tray-offline-32.png</file>
+        <file>theme/colored/state-tray-offline-64.png</file>
+        <file>theme/colored/state-tray-offline-128.png</file>
+        <file>theme/colored/state-tray-offline-256.png</file>
     </qresource>
 </RCC>
